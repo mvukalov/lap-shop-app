@@ -1,6 +1,6 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY lap-shop-backend/ .
+COPY . .
 RUN mvn -q -DskipTests package
 
 FROM eclipse-temurin:17-jre

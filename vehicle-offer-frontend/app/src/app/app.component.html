@@ -1,0 +1,170 @@
+<div class="page-wrapper">
+  <header class="page-header">
+    <h1>Lap Shop</h1>
+    <p>Laptop and Order Management System</p>
+  </header>
+
+  <div class="double-column-grid">
+    <!------------------------>
+    <!-- LAPTOP LIST BLOCK -->
+    <!------------------------>
+    <section class="single_block">
+      <div class="single_block__header">
+        <h2>Laptops</h2>
+
+        <!-- Filtering list by brand-->
+        <div class="form-row">
+          <label>Filter by brand</label>
+          <select [(ngModel)]="selectedBrand" name="selectedBrand">
+            <option value="">all brands</option>
+            <option *ngFor="let b of laptopBrands" [value]="b">
+              {{ b }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <!-- Displaying laptop list by filter (all or selected) -->
+      <div class="single_block__body">
+        <ul class="list">
+          <li class="list-item" *ngFor="let l of filteredLaptops">
+            <div class="list-item__title">{{ l.brand }} {{ l.model }}</div>
+            <div class="list-item__meta">{{ l.price }} €</div>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <!-------------------------->
+    <!-- ORDER CREATING BLOCK -->
+    <!-------------------------->
+    <section class="single_block">
+      <div class="single_block__header">
+        <h2>Create Order</h2>
+      </div>
+
+      <div class="single_block__body">
+        <form (ngSubmit)="createOrder()">
+          <div class="form-row">
+            <label>First Name</label>
+            <input type="text" [(ngModel)]="firstName" name="firstName" />
+          </div>
+
+          <div class="form-row">
+            <label>Last Name</label>
+            <input type="text" [(ngModel)]="lastName" name="lastName" />
+          </div>
+
+          <div class="form-row">
+            <label>Total Price (€)</label>
+            <input type="number" [(ngModel)]="totalPrice" name="totalPrice" />
+          </div>
+
+          <div class="form-row">
+            <label>Laptop</label>
+            <select [(ngModel)]="laptopId" name="laptopId">
+              <option [ngValue]="null">select</option>
+              <option *ngFor="let l of laptops" [ngValue]="l.id">
+                {{ l.brand }} {{ l.model }}
+              </option>
+            </select>
+          </div>
+
+          <div class="actions">
+            <button type="submit">Save Order</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+  <!---------------------->
+  <!-- ORDERS LIST BLOCK -->
+  <!----------------------->
+  <section class="single_block">
+    <div class="single_block__header">
+      <h2>Orders</h2>
+      <!-- Dropdown filter by customer -->
+      <div class="form-row">
+        <label>Filter by customer</label>
+        <select [(ngModel)]="selectedCustomer" name="selectedCustomer">
+          <option value="">all customers</option>
+          <option *ngFor="let c of orderCustomers" [value]="c">
+            {{ c }}
+          </option>
+        </select>
+      </div>
+      <!-- Dropdown filter by brand -->
+      <div class="form-row">
+        <label>Filter by brand</label>
+        <select [(ngModel)]="selectedOrderBrand" name="selectedOrderBrand">
+          <option value="">all brands</option>
+          <option *ngFor="let b of orderBrands" [value]="b">
+            {{ b }}
+          </option>
+        </select>
+      </div>
+      <!-- Dropdown filter by price(asc/desc) -->
+      <div class="form-row">
+        <label>Filter by price</label>
+        <select [(ngModel)]="orderSort" name="orderSort">
+          <option value="none">all orders</option>
+          <option value="desc">Highest first</option>
+          <option value="asc">Lowest first</option>
+        </select>
+      </div>
+    </div>
+    <!-- Displaying order list by filter (all or selected) -->
+    <div class="single_block__body">
+      <ul class="list">
+        <li class="list-item" *ngFor="let o of filteredOrders">
+          <ng-container *ngIf="editingId !== o.id; else editMode">
+            <div class="offer-row">
+              <div class="offer-row__main">
+                <div class="list-item__title">
+                  {{ o.customerFirstName }} {{ o.customerLastName }}
+                </div>
+                <div class="list-item__meta">
+                  {{ o.totalPrice }} € - ({{ o.laptop.brand }}
+                  {{ o.laptop.model }})
+                </div>
+              </div>
+
+              <div class="offer-row__actions">
+                <button type="button" (click)="startEdit(o)">Edit</button>
+              </div>
+            </div>
+          </ng-container>
+          <!-- Editing orders -->
+          <ng-template #editMode>
+            <div class="offer-edit">
+              <input
+                type="text"
+                [(ngModel)]="editFirstName"
+                name="editFirstName{{ o.id }}"
+              />
+              <input
+                type="text"
+                [(ngModel)]="editLastName"
+                name="editLastName{{ o.id }}"
+              />
+              <input
+                type="number"
+                [(ngModel)]="editTotalPrice"
+                name="editTotalPrice{{ o.id }}"
+              />
+
+              <select [(ngModel)]="editLaptopId" name="editLaptopId{{ o.id }}">
+                <option *ngFor="let l of laptops" [ngValue]="l.id">
+                  {{ l.brand }} {{ l.model }}
+                </option>
+              </select>
+
+              <div class="offer-row__actions">
+                <button type="button" (click)="saveEdit()">Save</button>
+                <button type="button" (click)="cancelEdit()">Cancel</button>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>

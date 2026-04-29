@@ -8,6 +8,7 @@ export interface ShopOrder {
   id: number;
   customerFirstName: string;
   customerLastName: string;
+  customerAddress: string;
   totalPrice: number;
   laptop: {
     id: number;
@@ -32,6 +33,7 @@ export class OrdersService {
   createOrder(order: {
     customerFirstName: string;
     customerLastName: string;
+    customerAddress: string;
     totalPrice: number;
     laptopId: number;
   }): Observable<ShopOrder> {
@@ -43,6 +45,7 @@ export class OrdersService {
     payload: {
       customerFirstName: string;
       customerLastName: string;
+      customerAddress: string;
       totalPrice: number;
       laptopId: number | null;
     },

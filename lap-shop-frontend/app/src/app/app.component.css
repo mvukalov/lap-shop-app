@@ -102,6 +102,19 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(255, 138, 31, 0.22);
 }
 
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-color: #d9534f;
+  box-shadow: 0 0 0 3px rgba(217, 83, 79, 0.18);
+}
+
+.error {
+  color: #ffb3a7;
+  font-size: 0.84rem;
+  margin-top: 5px;
+  line-height: 1.25;
+}
+
 button {
   padding: 9px 15px;
   border-radius: 10px;
@@ -115,6 +128,12 @@ button {
     background-color 0.2s ease;
 }
 
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
 button:hover {
   background: var(--primary-strong);
   transform: translateY(-1px);
@@ -122,6 +141,28 @@ button:hover {
 
 button:active {
   transform: translateY(0);
+}
+
+.order-block {
+  border-color: var(--highlight);
+}
+
+.orders-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.orders-toolbar .form-row {
+  flex: 1;
+  min-width: 180px;
+}
+
+.price-info {
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .list {

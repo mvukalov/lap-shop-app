@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { LaptopsService, Laptop } from './services/laptops.service';
 import { OrdersService, ShopOrder } from './services/orders.service';
 
@@ -25,12 +25,14 @@ export class AppComponent implements OnInit {
 
   firstName = '';
   lastName = '';
+  customerAddress = '';
   totalPrice: number | null = null;
   laptopId: number | null = null;
 
   editingId: number | null = null;
   editFirstName = '';
   editLastName = '';
+  editCustomerAddress = '';
   editTotalPrice: number | null = null;
   editLaptopId: number | null = null;
 
@@ -87,11 +89,33 @@ export class AppComponent implements OnInit {
     ).sort();
   }
 
-  createOrder(): void {
+  get selectedLaptopPrice(): number | null {
+    const laptop = this.laptops.find((l) => l.id === this.laptopId);
+    return laptop ? laptop.price : null;
+  }
+
+  get selectedEditLaptopPrice(): number | null {
+    const laptop = this.laptops.find((l) => l.id === this.editLaptopId);
+    return laptop ? laptop.price : null;
+  }
+
+  onLaptopChange(laptopId: number | null): void {
+    this.laptopId = laptopId;
+    const laptop = this.laptops.find((l) => l.id === laptopId);
+    this.totalPrice = laptop ? laptop.price : null;
+  }
+
+  onEditLaptopChange(laptopId: number | null): void {
+    this.editLaptopId = laptopId;
+    const laptop = this.laptops.find((l) => l.id === laptopId);
+    this.editTotalPrice = laptop ? laptop.price : null;
+  }
+
+  createOrder(orderForm: NgForm): void {
     if (
-      !this.firstName ||
-      !this.lastName ||
+      orderForm.invalid ||
       this.totalPrice == null ||
+      this.totalPrice <= 0 ||
       this.laptopId == null
     ) {
       return;
@@ -101,6 +125,7 @@ export class AppComponent implements OnInit {
       .createOrder({
         customerFirstName: this.firstName,
         customerLastName: this.lastName,
+        customerAddress: this.customerAddress,
         totalPrice: this.totalPrice,
         laptopId: this.laptopId,
       })
@@ -109,8 +134,10 @@ export class AppComponent implements OnInit {
 
         this.firstName = '';
         this.lastName = '';
+        this.customerAddress = '';
         this.totalPrice = null;
         this.laptopId = null;
+        orderForm.resetForm();
       });
   }
 
@@ -118,12 +145,21 @@ export class AppComponent implements OnInit {
     this.editingId = order.id;
     this.editFirstName = order.customerFirstName;
     this.editLastName = order.customerLastName;
-    this.editTotalPrice = order.totalPrice;
+    this.editCustomerAddress = order.customerAddress || '';
     this.editLaptopId = order.laptop.id;
+    this.editTotalPrice = order.laptop.price;
   }
 
   saveEdit(): void {
-    if (this.editingId == null || this.editTotalPrice == null) {
+    if (
+      this.editingId == null ||
+      !this.editFirstName ||
+      !this.editLastName ||
+      !this.editCustomerAddress ||
+      this.editTotalPrice == null ||
+      this.editTotalPrice <= 0 ||
+      this.editLaptopId == null
+    ) {
       return;
     }
 
@@ -131,6 +167,7 @@ export class AppComponent implements OnInit {
       .updateOrder(this.editingId, {
         customerFirstName: this.editFirstName,
         customerLastName: this.editLastName,
+        customerAddress: this.editCustomerAddress,
         totalPrice: this.editTotalPrice,
         laptopId: this.editLaptopId,
       })

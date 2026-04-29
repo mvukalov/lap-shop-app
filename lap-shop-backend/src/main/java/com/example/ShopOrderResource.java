@@ -39,7 +39,8 @@ public class ShopOrderResource {
         ShopOrder order = new ShopOrder();
         order.customerFirstName = req.customerFirstName;
         order.customerLastName = req.customerLastName;
-        order.totalPrice = req.totalPrice;
+        order.customerAddress = req.customerAddress;
+        order.totalPrice = laptop.price;
         order.laptop = laptop;
 
         order.persist();
@@ -59,7 +60,7 @@ public class ShopOrderResource {
 
         order.customerFirstName = req.customerFirstName;
         order.customerLastName = req.customerLastName;
-        order.totalPrice = req.totalPrice;
+        order.customerAddress = req.customerAddress;
 
         if (req.laptopId != null) {
             Laptop laptop = Laptop.findById(req.laptopId);
@@ -67,6 +68,7 @@ public class ShopOrderResource {
                 throw new WebApplicationException("Laptop not found", 404);
             }
             order.laptop = laptop;
+            order.totalPrice = laptop.price;
         }
 
         return order;

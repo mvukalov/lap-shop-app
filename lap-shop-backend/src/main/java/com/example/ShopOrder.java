@@ -9,6 +9,7 @@ public class ShopOrder extends PanacheEntity {
 
     public String customerFirstName;
     public String customerLastName;
+    public String customerAddress;
 
     public Double totalPrice;
 

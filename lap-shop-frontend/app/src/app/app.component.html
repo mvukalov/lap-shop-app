@@ -42,73 +42,159 @@
       </div>
 
       <div class="single_block__body">
-        <form (ngSubmit)="createOrder()">
+        <form #orderForm="ngForm" (ngSubmit)="createOrder(orderForm)">
           <div class="form-row">
             <label>First Name</label>
-            <input type="text" [(ngModel)]="firstName" name="firstName" />
+            <input
+              type="text"
+              [(ngModel)]="firstName"
+              name="firstName"
+              #firstNameInput="ngModel"
+              required
+              minlength="2"
+              maxlength="30"
+              pattern="^[A-Za-zČĆŽŠĐčćžšđ ]+$"
+            />
+            <div
+              class="error"
+              *ngIf="firstNameInput.invalid && firstNameInput.touched"
+            >
+              <small *ngIf="firstNameInput.errors?.['required']"
+                >First name is required.</small
+              >
+              <small *ngIf="firstNameInput.errors?.['minlength']"
+                >First name must be at least 2 characters.</small
+              >
+              <small *ngIf="firstNameInput.errors?.['pattern']"
+                >Use letters only.</small
+              >
+            </div>
           </div>
 
           <div class="form-row">
             <label>Last Name</label>
-            <input type="text" [(ngModel)]="lastName" name="lastName" />
+            <input
+              type="text"
+              [(ngModel)]="lastName"
+              name="lastName"
+              #lastNameInput="ngModel"
+              required
+              minlength="2"
+              maxlength="30"
+              pattern="^[A-Za-zČĆŽŠĐčćžšđ ]+$"
+            />
+            <div
+              class="error"
+              *ngIf="lastNameInput.invalid && lastNameInput.touched"
+            >
+              <small *ngIf="lastNameInput.errors?.['required']"
+                >Last name is required.</small
+              >
+              <small *ngIf="lastNameInput.errors?.['minlength']"
+                >Last name must be at least 2 characters.</small
+              >
+              <small *ngIf="lastNameInput.errors?.['pattern']"
+                >Use letters only.</small
+              >
+            </div>
           </div>
 
           <div class="form-row">
-            <label>Total Price (€)</label>
-            <input type="number" [(ngModel)]="totalPrice" name="totalPrice" />
+            <label>Address</label>
+            <input
+              type="text"
+              [(ngModel)]="customerAddress"
+              name="customerAddress"
+              #customerAddressInput="ngModel"
+              required
+              minlength="5"
+              maxlength="120"
+            />
+            <div
+              class="error"
+              *ngIf="
+                customerAddressInput.invalid && customerAddressInput.touched
+              "
+            >
+              <small *ngIf="customerAddressInput.errors?.['required']"
+                >Address is required.</small
+              >
+              <small *ngIf="customerAddressInput.errors?.['minlength']"
+                >Address must be at least 5 characters.</small
+              >
+            </div>
           </div>
 
           <div class="form-row">
             <label>Laptop</label>
-            <select [(ngModel)]="laptopId" name="laptopId">
-              <option [ngValue]="null">select</option>
+            <select
+              [(ngModel)]="laptopId"
+              (ngModelChange)="onLaptopChange($event)"
+              name="laptopId"
+              #laptopIdInput="ngModel"
+              required
+            >
+              <option [ngValue]="null" disabled selected>select</option>
               <option *ngFor="let l of laptops" [ngValue]="l.id">
                 {{ l.brand }} {{ l.model }}
               </option>
             </select>
+            <div class="price-info">
+              <small *ngIf="selectedLaptopPrice !== null">
+                Selected laptop price: {{ selectedLaptopPrice }} €
+              </small>
+            </div>
+            <div
+              class="error"
+              *ngIf="laptopIdInput.invalid && laptopIdInput.touched"
+            >
+              <small>Laptop selection is required.</small>
+            </div>
           </div>
 
           <div class="actions">
-            <button type="submit">Save Order</button>
+            <button type="submit" [disabled]="orderForm.invalid">
+              Save Order
+            </button>
           </div>
         </form>
       </div>
     </section>
   </div>
-  <!---------------------->
+
+  <!-------------------->
   <!-- ORDERS LIST BLOCK -->
-  <!----------------------->
-  <section class="single_block">
+  <!---------------------->
+  <section class="single_block order-block">
     <div class="single_block__header">
       <h2>Orders</h2>
-      <!-- Dropdown filter by customer -->
-      <div class="form-row">
-        <label>Filter by customer</label>
-        <select [(ngModel)]="selectedCustomer" name="selectedCustomer">
-          <option value="">all customers</option>
-          <option *ngFor="let c of orderCustomers" [value]="c">
-            {{ c }}
-          </option>
-        </select>
-      </div>
-      <!-- Dropdown filter by brand -->
-      <div class="form-row">
-        <label>Filter by brand</label>
-        <select [(ngModel)]="selectedOrderBrand" name="selectedOrderBrand">
-          <option value="">all brands</option>
-          <option *ngFor="let b of orderBrands" [value]="b">
-            {{ b }}
-          </option>
-        </select>
-      </div>
-      <!-- Dropdown filter by price(asc/desc) -->
-      <div class="form-row">
-        <label>Filter by price</label>
-        <select [(ngModel)]="orderSort" name="orderSort">
-          <option value="none">all orders</option>
-          <option value="desc">Highest first</option>
-          <option value="asc">Lowest first</option>
-        </select>
+      <div class="orders-toolbar">
+        <div class="form-row">
+          <label>Filter by customer</label>
+          <select [(ngModel)]="selectedCustomer" name="selectedCustomer">
+            <option value="">all customers</option>
+            <option *ngFor="let c of orderCustomers" [value]="c">
+              {{ c }}
+            </option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Filter by brand</label>
+          <select [(ngModel)]="selectedOrderBrand" name="selectedOrderBrand">
+            <option value="">all brands</option>
+            <option *ngFor="let b of orderBrands" [value]="b">
+              {{ b }}
+            </option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Sort by price</label>
+          <select [(ngModel)]="orderSort" name="orderSort">
+            <option value="none">all orders</option>
+            <option value="desc">Highest first</option>
+            <option value="asc">Lowest first</option>
+          </select>
+        </div>
       </div>
     </div>
     <!-- Displaying order list by filter (all or selected) -->
@@ -122,8 +208,14 @@
                   {{ o.customerFirstName }} {{ o.customerLastName }}
                 </div>
                 <div class="list-item__meta">
-                  {{ o.totalPrice }} € - ({{ o.laptop.brand }}
+                  Price: {{ o.totalPrice }} € - ({{ o.laptop.brand }}
                   {{ o.laptop.model }})
+                </div>
+                <div class="list-item__meta">
+                  Name: {{ o.customerFirstName }} {{ o.customerLastName }}
+                </div>
+                <div class="list-item__meta">
+                  Address: {{ o.customerAddress }}
                 </div>
               </div>
 
@@ -135,30 +227,132 @@
           <!-- Editing orders -->
           <ng-template #editMode>
             <div class="offer-edit">
-              <input
-                type="text"
-                [(ngModel)]="editFirstName"
-                name="editFirstName{{ o.id }}"
-              />
-              <input
-                type="text"
-                [(ngModel)]="editLastName"
-                name="editLastName{{ o.id }}"
-              />
-              <input
-                type="number"
-                [(ngModel)]="editTotalPrice"
-                name="editTotalPrice{{ o.id }}"
-              />
+              <div class="form-row">
+                <input
+                  type="text"
+                  [(ngModel)]="editFirstName"
+                  name="editFirstName{{ o.id }}"
+                  #editFirstNameInput="ngModel"
+                  required
+                  minlength="2"
+                  maxlength="30"
+                  pattern="^[A-Za-zČĆŽŠĐčćžšđ ]+$"
+                />
+                <div
+                  class="error"
+                  *ngIf="
+                    editFirstNameInput.invalid && editFirstNameInput.touched
+                  "
+                >
+                  <small *ngIf="editFirstNameInput.errors?.['required']"
+                    >First name is required.</small
+                  >
+                  <small *ngIf="editFirstNameInput.errors?.['minlength']"
+                    >First name must be at least 2 characters.</small
+                  >
+                  <small *ngIf="editFirstNameInput.errors?.['pattern']"
+                    >Use letters only.</small
+                  >
+                </div>
+              </div>
 
-              <select [(ngModel)]="editLaptopId" name="editLaptopId{{ o.id }}">
-                <option *ngFor="let l of laptops" [ngValue]="l.id">
-                  {{ l.brand }} {{ l.model }}
-                </option>
-              </select>
+              <div class="form-row">
+                <input
+                  type="text"
+                  [(ngModel)]="editLastName"
+                  name="editLastName{{ o.id }}"
+                  #editLastNameInput="ngModel"
+                  required
+                  minlength="2"
+                  maxlength="30"
+                  pattern="^[A-Za-zČĆŽŠĐčćžšđ ]+$"
+                />
+                <div
+                  class="error"
+                  *ngIf="editLastNameInput.invalid && editLastNameInput.touched"
+                >
+                  <small *ngIf="editLastNameInput.errors?.['required']"
+                    >Last name is required.</small
+                  >
+                  <small *ngIf="editLastNameInput.errors?.['minlength']"
+                    >Last name must be at least 2 characters.</small
+                  >
+                  <small *ngIf="editLastNameInput.errors?.['pattern']"
+                    >Use letters only.</small
+                  >
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label>Address</label>
+                <input
+                  type="text"
+                  [(ngModel)]="editCustomerAddress"
+                  name="editCustomerAddress{{ o.id }}"
+                  #editCustomerAddressInput="ngModel"
+                  required
+                  minlength="5"
+                  maxlength="120"
+                />
+                <div
+                  class="error"
+                  *ngIf="
+                    editCustomerAddressInput.invalid &&
+                    editCustomerAddressInput.touched
+                  "
+                >
+                  <small *ngIf="editCustomerAddressInput.errors?.['required']"
+                    >Address is required.</small
+                  >
+                  <small *ngIf="editCustomerAddressInput.errors?.['minlength']"
+                    >Address must be at least 5 characters.</small
+                  >
+                </div>
+              </div>
+
+              <div class="form-row">
+                <select
+                  [(ngModel)]="editLaptopId"
+                  (ngModelChange)="onEditLaptopChange($event)"
+                  name="editLaptopId{{ o.id }}"
+                  #editLaptopInput="ngModel"
+                  required
+                >
+                  <option [ngValue]="null" disabled selected>select</option>
+                  <option *ngFor="let l of laptops" [ngValue]="l.id">
+                    {{ l.brand }} {{ l.model }}
+                  </option>
+                </select>
+                <div
+                  class="price-info"
+                  *ngIf="selectedEditLaptopPrice !== null"
+                >
+                  <small
+                    >Selected laptop price:
+                    {{ selectedEditLaptopPrice }} €</small
+                  >
+                </div>
+                <div
+                  class="error"
+                  *ngIf="editLaptopInput.invalid && editLaptopInput.touched"
+                >
+                  <small>Laptop selection is required.</small>
+                </div>
+              </div>
 
               <div class="offer-row__actions">
-                <button type="button" (click)="saveEdit()">Save</button>
+                <button
+                  type="button"
+                  (click)="saveEdit()"
+                  [disabled]="
+                    editFirstNameInput.invalid ||
+                    editLastNameInput.invalid ||
+                    editCustomerAddressInput.invalid ||
+                    editLaptopInput.invalid
+                  "
+                >
+                  Save
+                </button>
                 <button type="button" (click)="cancelEdit()">Cancel</button>
               </div>
             </div>

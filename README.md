@@ -11,6 +11,10 @@ This project was built for educational and portfolio purposes to practice full-s
 👉 Frontend: https://lap-shop-mv.netlify.app  
 👉 Backend API: https://lap-shop-app.onrender.com
 
+## Note
+> ⚠️❗❗ The backend is hosted on Render's free tier, so the first request may take around 15–30 seconds because the server needs time to wake up from inactivity. 
+After the initial wake-up, the application responds normally.
+> 
 ---
 
 ## ✨ Features
